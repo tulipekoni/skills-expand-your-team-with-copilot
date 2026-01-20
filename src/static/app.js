@@ -893,7 +893,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Social sharing functions
   function shareOnFacebook(activityName, description, schedule) {
     const pageUrl = window.location.href;
-    const shareText = `Check out ${activityName} at Mergington High School! ${schedule}`;
+    const shareText = `Check out ${activityName} at Mergington High School! ${description} Schedule: ${schedule}`;
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       pageUrl
     )}&quote=${encodeURIComponent(shareText)}`;
@@ -902,8 +902,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function shareOnTwitter(activityName, description, schedule) {
     const pageUrl = window.location.href;
-    const shareText = `Check out ${activityName} at Mergington High School! ${schedule}`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    const shareText = `Check out ${activityName} at Mergington High School! ${description} Schedule: ${schedule}`;
+    const twitterUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(
       shareText
     )}&url=${encodeURIComponent(pageUrl)}`;
     window.open(twitterUrl, "_blank", "width=600,height=400");
