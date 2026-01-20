@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryFilters = document.querySelectorAll(".category-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
 
   // Authentication elements
   const loginButton = document.getElementById("login-button");
@@ -40,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
+  let currentDifficulty = null;
 
   // Authentication state
   let currentUser = null;
@@ -425,6 +427,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Apply difficulty filter
+      if (currentDifficulty !== null) {
+        if (currentDifficulty === "all") {
+          // "All Levels" selected - only show activities with no difficulty specified
+          if (details.difficulty) {
+            return;
+          }
+        } else {
+          // Specific difficulty selected - only show activities with that difficulty
+          if (details.difficulty !== currentDifficulty) {
+            return;
+          }
+        }
+      }
+
       // Apply weekend filter if selected
       if (currentTimeRange === "weekend" && details.schedule_details) {
         const activityDays = details.schedule_details.days;
@@ -518,6 +535,11 @@ document.addEventListener("DOMContentLoaded", () => {
       </span>
     `;
 
+    // Create difficulty badge if difficulty is specified
+    const difficultyBadge = details.difficulty
+      ? `<span class="difficulty-badge difficulty-${details.difficulty.toLowerCase()}">${details.difficulty}</span>`
+      : "";
+
     // Create capacity indicator
     const capacityIndicator = `
       <div class="capacity-container ${capacityStatusClass}">
@@ -533,6 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activityCard.innerHTML = `
       ${tagHtml}
+      ${difficultyBadge}
       <h4>${name}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
@@ -685,6 +708,19 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update current time filter and fetch activities
       currentTimeRange = button.dataset.time;
       fetchActivities();
+    });
+  });
+
+  // Add event listeners for difficulty filter buttons
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Update active class
+      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Update current difficulty filter and display filtered activities
+      currentDifficulty = button.dataset.difficulty;
+      displayFilteredActivities();
     });
   });
 
