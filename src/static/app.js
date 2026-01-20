@@ -472,6 +472,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, (m) => map[m]);
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -554,13 +566,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="social-share-buttons">
         <span class="share-label">Share:</span>
-        <button class="share-button facebook-share" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share on Facebook">
+        <button class="share-button facebook-share" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Facebook">
           <span class="share-icon">📘</span>
         </button>
-        <button class="share-button twitter-share" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share on Twitter">
+        <button class="share-button twitter-share" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share on Twitter">
           <span class="share-icon">🐦</span>
         </button>
-        <button class="share-button email-share" data-activity="${name}" data-description="${details.description}" data-schedule="${formattedSchedule}" title="Share via Email">
+        <button class="share-button email-share" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share via Email">
           <span class="share-icon">✉️</span>
         </button>
       </div>
@@ -604,17 +616,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const twitterButton = activityCard.querySelector(".twitter-share");
     const emailButton = activityCard.querySelector(".email-share");
 
-    facebookButton.addEventListener("click", () => {
-      shareOnFacebook(name, details.description, formattedSchedule);
-    });
+    if (facebookButton) {
+      facebookButton.addEventListener("click", () => {
+        shareOnFacebook(name, details.description, formattedSchedule);
+      });
+    }
 
-    twitterButton.addEventListener("click", () => {
-      shareOnTwitter(name, details.description, formattedSchedule);
-    });
+    if (twitterButton) {
+      twitterButton.addEventListener("click", () => {
+        shareOnTwitter(name, details.description, formattedSchedule);
+      });
+    }
 
-    emailButton.addEventListener("click", () => {
-      shareViaEmail(name, details.description, formattedSchedule);
-    });
+    if (emailButton) {
+      emailButton.addEventListener("click", () => {
+        shareViaEmail(name, details.description, formattedSchedule);
+      });
+    }
 
     activitiesList.appendChild(activityCard);
   }
